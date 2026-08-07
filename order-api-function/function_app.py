@@ -7,7 +7,7 @@ from helpers import validate_order
 app = func.FunctionApp()
 
 @app.function_name(name="CreateOrderTrigger")
-@app.route(route="order", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
+@app.route(route="order", methods=["POST"], auth_level=func.AuthLevel.FUNCTION)
 def CreateOrderTrigger(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Processing of the Order has started.")
 
