@@ -37,9 +37,9 @@ resource "azurerm_linux_function_app" "order-api-func" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME = "python"
     AzurewebJobsStorage = azurerm_storage_account.main.primary_connection_string
-    APPINSIGHTS_INSTRUMENTATION_KEY = azurerm_application_insights.app1_insights.instrumentation_key
+    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.app1_insights.instrumentation_key
 
-    APPINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app1_insights.connection_string
+    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app1_insights.connection_string
     ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
   }
   tags = {
