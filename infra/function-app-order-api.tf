@@ -68,7 +68,7 @@ locals {
   desired_metrics = toset([
     "AllMetrics"
   ])
-  available_metrics = toset(data.azurerm_monitor_diagnostic_categories.func.metric_category_types)
+  available_metrics = toset(data.azurerm_monitor_diagnostic_categories.func.metrics_category_types)
   enabled_metrics = setintersection(local.desired_metrics, local.available_metrics)
 }
 
