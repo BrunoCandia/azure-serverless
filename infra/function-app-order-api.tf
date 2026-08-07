@@ -37,7 +37,7 @@ resource "azurerm_linux_function_app" "order-api-func" {
   app_settings = {
     FUNCTIONS_WORKER_RUNTIME = "python"
     AzurewebJobsStorage = azurerm_storage_account.main.primary_connection_string
-    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.app1_insights.instrumentation_key
+    # APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.app1_insights.instrumentation_key
 
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app1_insights.connection_string
     ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
@@ -68,7 +68,7 @@ locals {
   desired_metrics = toset([
     "AllMetrics"
   ])
-  available_metrics = toset(data.azurerm_monitor_diagnostic_categories.func.log_category_types)
+  available_metrics = toset(data.azurerm_monitor_diagnostic_categories.func.metric_category_types)
   enabled_metrics = setintersection(local.desired_metrics, local.available_metrics)
 }
 
