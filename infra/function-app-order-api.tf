@@ -48,7 +48,7 @@ resource "azurerm_linux_function_app" "order-api-func" {
   }    
 }
 
-data "azurerm_monitor_diagnostic_categories" "function" {
+data "azurerm_monitor_diagnostic_categories" "func" {
   resource_id = azurerm_linux_function_app.order-api-func.id
 }
 
