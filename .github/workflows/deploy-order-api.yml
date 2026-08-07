@@ -38,7 +38,7 @@ jobs:
         uses: azure/functions-action@v1
         with:
           app-name: 'order-system-api-dev-func100'
-          package: order-api-function
-          publish-profile: ${{ secrets.AZURE_FUNCTION_APP_PUBLISH_PROFILE }}
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          package: 'order-api-function'
+          publish-profile: ${{ secrets.ORDER_API_AZURE_FUNCTION_APP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: 'true'
+          enable-oryx-build: 'true'
