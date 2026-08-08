@@ -9,7 +9,8 @@ resource "azurerm_linux_function_app" "order-process-func" {
 
   site_config {
     application_stack {
-      dotnet_version = "10.0"
+      # dotnet_version = "10.0"
+      dotnet_version = "9.0"
       use_dotnet_isolated_runtime = true      
     }
   }
