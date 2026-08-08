@@ -15,3 +15,9 @@ variable "environment" {
   type = string
   default = "dev"
 }
+
+variable "subscription_id" {
+  description = "azure subscription id to deploy the resources to"
+  type = string
+  default = ""
+}
