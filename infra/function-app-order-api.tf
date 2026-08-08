@@ -90,12 +90,12 @@ resource "azurerm_monitor_diagnostic_setting" "func_to_law" {
     }
   }
 
-  dynamic "metric" {
-    for_each = local.enabled_metrics
+  # dynamic "metric" {
+  #   for_each = local.enabled_metrics
 
-    content {
-      category = metric.value
-      enabled  = true      
-    }
-  }
+  #   content {
+  #     category = metric.value
+  #     enabled  = true      
+  #   }
+  # }
 }
