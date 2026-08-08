@@ -10,6 +10,8 @@ terraform {
 
 provider "azurerm" {
   features {}
+
+  subscription_id = var.subscription_id
 }
 
 # Create the resources to store the Terraform state in Azure Blob Storage
