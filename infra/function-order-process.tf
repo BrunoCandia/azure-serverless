@@ -1,5 +1,5 @@
-resource "azurerm_linux_function_app" "order_process" {
-  name = "order-processor-${var.environment}"
+resource "azurerm_linux_function_app" "order-process-func" {
+  name = "${var.project_name}-order-processor-${var.environment}-func100"
   location = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   service_plan_id = azurerm_service_plan.my_plan.id
@@ -33,7 +33,7 @@ resource "azurerm_linux_function_app" "order_process" {
 }
 
 resource "azurerm_application_insights" "order_insights" {
-  name                = "order-insights-${var.environment}"
+  name                = "${var.project_name}-order-insights-${var.environment}"
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   application_type    = "other"
