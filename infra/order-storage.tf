@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "file_storage" {
-  name = "order${var.environment}st"
+  name = "order${var.environment}sa100"
   resource_group_name = azurerm_resource_group.main.name
   location = azurerm_resource_group.main.location
   account_tier = "Standard"
