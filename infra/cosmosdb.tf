@@ -1,5 +1,5 @@
 resource "azurerm_cosmosdb_account" "main" {
-  name = "${var.project_name}-${var.environment}-cosmosdb"
+  name = "${var.project_name}-${var.environment}-cosmosdb100"
   location = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
 
