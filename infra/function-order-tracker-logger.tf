@@ -19,6 +19,10 @@ resource "azurerm_linux_function_app" "order_tracker_logger_func" {
 
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.order_tracker_logger_insights.connection_string
     ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
+
+    CosmosDbConnection = azurerm_cosmosdb_account.main.primary_sql_connection_string
+    CosmosDbDatabaseName = azurerm_cosmosdb_sql_database.orders_db.name
+    CosmosContainerName = azurerm_cosmosdb_sql_container.orders.name
   }    
 }
 
