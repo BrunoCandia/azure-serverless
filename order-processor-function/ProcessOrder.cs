@@ -42,6 +42,9 @@ public class ProcessOrder
             return;
         }
 
+        _logger.LogInformation("Processing order for customer: {customerName}, Email: {email}, Order Date: {orderDate}, Order Amount: {orderAmount}",
+            orderInfo.CustomerName, orderInfo.Email, orderInfo.OrderDate, orderInfo.OrderAmount);
+
         var orderDetailInfo = $"Order Details: \n" +
             $"Customer Name: {orderInfo.CustomerName} \n" +
             $"Email: {orderInfo.Email} \n" +
@@ -62,7 +65,7 @@ public class ProcessOrder
         var blobContainerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
         await blobContainerClient.CreateIfNotExistsAsync();
 
-        var blobName = $"order-{orderInfo.CustomerName}-{DateTime.UtcNow:yyyyMMddHHmmss}.txt";
+        var blobName = $"order-{orderInfo.CustomerName.Replace(" ", "-")}-{DateTime.UtcNow:yyyyMMddHHmmss}.txt";
         var blobClient = blobContainerClient.GetBlobClient(blobName);
         
         using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(orderDetailInfo)))
