@@ -7,7 +7,13 @@ on:
     paths:
       - 'infra/**'
       - '.github/workflows/deploy-infra.yml'
-  workflow_dispatch: # allow manual execution
+  workflow_dispatch:
+    inputs:
+      destroy_infra:
+        description: 'Destroy the Terraform infrastructure'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy-infra:
@@ -36,14 +42,39 @@ jobs:
       #   working-directory: ./infra
       #   run: terraform init
 
+      - name: Confirm destroy action
+        if: github.event_name == 'workflow_dispatch' && inputs.destroy_infra == true
+        run: echo "Destroy mode enabled. This will remove the deployed infrastructure."
+
+      - name: Terraform Destroy
+        if: github.event_name == 'workflow_dispatch' && inputs.destroy_infra == true
+        working-directory: ./infra
+        run: terraform destroy -auto-approve -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var "destroy_infra=true"
+
       - name: Terraform Validate
+        if: github.event_name != 'workflow_dispatch' || inputs.destroy_infra != true
         working-directory: ./infra
         run: terraform validate
 
       - name: Terraform Plan
+        if: github.event_name != 'workflow_dispatch' || inputs.destroy_infra != true
         working-directory: ./infra
-        run: terraform plan -out=tfplan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+        run: terraform plan -out=tfplan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var "destroy_infra=false"
 
       - name: Terraform Apply
+        if: github.event_name != 'workflow_dispatch' || inputs.destroy_infra != true
         working-directory: ./infra
-        run: terraform apply -auto-approve -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+        run: terraform apply -auto-approve -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var "destroy_infra=false"
+
+      - name: Verify Terraform state after destroy
+        if: github.event_name == 'workflow_dispatch' && inputs.destroy_infra == true
+        working-directory: ./infra
+        run: |
+          echo "Checking Terraform state after destroy..."
+          terraform state list
+          if [ -z "$(terraform state list)" ]; then
+            echo "Terraform state is empty. Destroy completed successfully."
+          else
+            echo "Terraform state still contains resources."
+            exit 1
+          fi

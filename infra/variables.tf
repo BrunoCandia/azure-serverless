@@ -21,3 +21,9 @@ variable "subscription_id" {
   type = string
   default = ""
 }
+
+variable "destroy_infra" {
+  description = "set to true to destroy the infrastructure"
+  type = bool
+  default = false
+}
