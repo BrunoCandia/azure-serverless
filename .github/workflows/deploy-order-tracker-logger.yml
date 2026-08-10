@@ -21,7 +21,7 @@ jobs:
       - name: Setup NodeJs
         uses: actions/setup-node@v4
         with:
-          node-version: '24.x'
+          node-version: '22.x'
 
       - name: Install Dependencies
         working-directory: order-tracker-logger-function

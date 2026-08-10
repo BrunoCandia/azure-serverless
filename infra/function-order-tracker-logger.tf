@@ -9,7 +9,7 @@ resource "azurerm_linux_function_app" "order_tracker_logger_func" {
 
   site_config {
     application_stack {
-      node_version = "24"
+      node_version = "22"
     }
   }
 
