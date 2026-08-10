@@ -2,7 +2,7 @@ resource "azurerm_linux_function_app" "order_tracker_logger_func" {
   name                       = "${var.project_name}-order-tracker-logger-${var.environment}-func100"
   resource_group_name        = azurerm_resource_group.main.name
   location                   = azurerm_resource_group.main.location
-  service_plan_id            = azurerm_app_service_plan.my_plan.id
+  service_plan_id            = azurerm_service_plan.my_plan.id
 
   storage_account_name       = azurerm_storage_account.main.name
   storage_account_access_key = azurerm_storage_account.main.primary_access_key
