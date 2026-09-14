@@ -1,5 +1,3 @@
-targetScope = 'subscription'
-
 @description('Azure region for all resources')
 param location string = 'centralus'
 
@@ -11,20 +9,12 @@ param environment string = 'dev'
 
 // Short unique suffix for resources that require globally-unique names
 var resourceToken = toLower(take(uniqueString(subscription().subscriptionId, projectName, environment), 6))
-var resourceGroupName = 'rg-${projectName}-${environment}'
 var commonTags = {
   course: 'serverless'
 }
 
-resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: resourceGroupName
-  location: location
-  tags: commonTags
-}
-
 module logAnalytics 'modules/log-analytics.bicep' = {
   name: 'log-analytics'
-  scope: rg
   params: {
     name: 'log-${projectName}-${environment}'
     location: location
@@ -33,7 +23,6 @@ module logAnalytics 'modules/log-analytics.bicep' = {
 
 module storage 'modules/storage.bicep' = {
   name: 'storage'
-  scope: rg
   params: {
     location: location
     mainStorageAccountName: toLower(take('st${take(replace(projectName, '-', ''), 8)}${environment}${resourceToken}', 24))
@@ -43,7 +32,6 @@ module storage 'modules/storage.bicep' = {
 
 module serviceBus 'modules/service-bus.bicep' = {
   name: 'service-bus'
-  scope: rg
   params: {
     location: location
     namespaceName: 'sb-${projectName}-${environment}-${resourceToken}'
@@ -52,7 +40,6 @@ module serviceBus 'modules/service-bus.bicep' = {
 
 module cosmos 'modules/cosmosdb.bicep' = {
   name: 'cosmosdb'
-  scope: rg
   params: {
     location: location
     accountName: toLower('cosmos-${projectName}-${environment}-${resourceToken}')
@@ -63,7 +50,6 @@ module cosmos 'modules/cosmosdb.bicep' = {
 
 module appServicePlan 'modules/app-service-plan.bicep' = {
   name: 'app-service-plan'
-  scope: rg
   params: {
     location: location
     name: 'asp-${projectName}-${environment}'
@@ -72,7 +58,6 @@ module appServicePlan 'modules/app-service-plan.bicep' = {
 
 module appInsightsApi 'modules/app-insights.bicep' = {
   name: 'app-insights-api'
-  scope: rg
   params: {
     location: location
     name: 'appi-${projectName}-api-${environment}'
@@ -83,7 +68,6 @@ module appInsightsApi 'modules/app-insights.bicep' = {
 
 module appInsightsProcessor 'modules/app-insights.bicep' = {
   name: 'app-insights-order-processor'
-  scope: rg
   params: {
     location: location
     name: 'appi-${projectName}-order-processor-${environment}'
@@ -93,7 +77,6 @@ module appInsightsProcessor 'modules/app-insights.bicep' = {
 
 module appInsightsTrackerLogger 'modules/app-insights.bicep' = {
   name: 'app-insights-order-tracker-logger'
-  scope: rg
   params: {
     location: location
     name: 'appi-${projectName}-order-tracker-logger-${environment}'
@@ -103,7 +86,6 @@ module appInsightsTrackerLogger 'modules/app-insights.bicep' = {
 
 module orderApiFunction 'modules/function-app-order-api.bicep' = {
   name: 'function-app-order-api'
-  scope: rg
   params: {
     location: location
     name: 'func-${projectName}-api-${environment}-${resourceToken}'
@@ -119,7 +101,6 @@ module orderApiFunction 'modules/function-app-order-api.bicep' = {
 
 module orderProcessorFunction 'modules/function-app-order-processor.bicep' = {
   name: 'function-app-order-processor'
-  scope: rg
   params: {
     location: location
     name: 'func-${projectName}-order-processor-${environment}-${resourceToken}'
@@ -136,7 +117,6 @@ module orderProcessorFunction 'modules/function-app-order-processor.bicep' = {
 
 module orderTrackerLoggerFunction 'modules/function-app-order-tracker-logger.bicep' = {
   name: 'function-app-order-tracker-logger'
-  scope: rg
   params: {
     location: location
     name: 'func-${projectName}-order-tracker-logger-${environment}-${resourceToken}'
@@ -151,7 +131,6 @@ module orderTrackerLoggerFunction 'modules/function-app-order-tracker-logger.bic
 
 module orderApiDiagnostics 'modules/diagnostic-settings.bicep' = {
   name: 'order-api-diagnostics'
-  scope: rg
   params: {
     name: 'func-${projectName}-api-${environment}-diag'
     functionAppName: orderApiFunction.outputs.functionAppName
@@ -161,7 +140,6 @@ module orderApiDiagnostics 'modules/diagnostic-settings.bicep' = {
 
 module eventGrid 'modules/event-grid.bicep' = {
   name: 'event-grid'
-  scope: rg
   params: {
     fileStorageAccountName: storage.outputs.fileStorageAccountName
     functionAppName: orderTrackerLoggerFunction.outputs.functionAppName
@@ -169,5 +147,8 @@ module eventGrid 'modules/event-grid.bicep' = {
   }
 }
 
-output resourceGroupName string = rg.name
+output resourceGroupName string = resourceGroup().name
 output orderApiFunctionUrl string = orderApiFunction.outputs.defaultHostname
+output orderApiFunctionAppName string = orderApiFunction.outputs.functionAppName
+output orderProcessorFunctionAppName string = orderProcessorFunction.outputs.functionAppName
+output orderTrackerLoggerFunctionAppName string = orderTrackerLoggerFunction.outputs.functionAppName

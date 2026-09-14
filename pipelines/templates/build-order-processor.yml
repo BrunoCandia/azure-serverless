@@ -1,0 +1,31 @@
+jobs:
+  - job: BuildOrderProcessor
+    displayName: Build order-processor-function (.NET)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: UseDotNet@2
+        displayName: Use .NET 9 SDK
+        inputs:
+          packageType: sdk
+          version: 9.0.x
+
+      - script: dotnet restore order-processor-function/order-processor-function.csproj
+        displayName: dotnet restore
+
+      - script: dotnet build order-processor-function/order-processor-function.csproj --configuration Release --no-restore
+        displayName: dotnet build
+
+      - script: dotnet publish order-processor-function/order-processor-function.csproj --configuration Release --no-build --output $(Build.ArtifactStagingDirectory)/order-processor-publish
+        displayName: dotnet publish
+
+      - task: ArchiveFiles@2
+        displayName: Archive order-processor-function
+        inputs:
+          rootFolderOrFile: $(Build.ArtifactStagingDirectory)/order-processor-publish
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/order-processor-function.zip
+
+      - publish: $(Build.ArtifactStagingDirectory)/order-processor-function.zip
+        artifact: order-processor-function

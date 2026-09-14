@@ -1,0 +1,145 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - infra/bicep
+      - order-api-function
+      - order-processor-function
+      - order-tracker-logger-function
+      - azure-pipelines.yml
+      - pipelines
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: Build function app artifacts
+    jobs:
+      - template: pipelines/templates/build-order-api.yml
+      - template: pipelines/templates/build-order-processor.yml
+      - template: pipelines/templates/build-order-tracker-logger.yml
+
+  # ---------------- dev ----------------
+  - template: pipelines/templates/deploy-infra.yml
+    parameters:
+      environmentName: dev
+      serviceConnectionName: sc-order-system-dev
+      resourceGroupName: rg-order-system-dev
+      bicepParamFile: infra/bicep/params/dev.bicepparam
+      dependsOn:
+        - Build
+
+  - stage: DeployFunctions_dev
+    displayName: Deploy function apps (dev)
+    dependsOn: DeployInfra_dev
+    variables:
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+    jobs:
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: dev
+          serviceConnectionName: sc-order-system-dev
+          functionAppName: $(orderApiFunctionAppName)
+          artifactName: order-api-function
+          jobDisplayName: Deploy order-api-function (dev)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: dev
+          serviceConnectionName: sc-order-system-dev
+          functionAppName: $(orderProcessorFunctionAppName)
+          artifactName: order-processor-function
+          jobDisplayName: Deploy order-processor-function (dev)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: dev
+          serviceConnectionName: sc-order-system-dev
+          functionAppName: $(orderTrackerLoggerFunctionAppName)
+          artifactName: order-tracker-logger-function
+          jobDisplayName: Deploy order-tracker-logger-function (dev)
+
+  # ---------------- staging ----------------
+  - template: pipelines/templates/deploy-infra.yml
+    parameters:
+      environmentName: staging
+      serviceConnectionName: sc-order-system-staging
+      resourceGroupName: rg-order-system-staging
+      bicepParamFile: infra/bicep/params/staging.bicepparam
+      dependsOn:
+        - DeployFunctions_dev
+
+  - stage: DeployFunctions_staging
+    displayName: Deploy function apps (staging)
+    dependsOn: DeployInfra_staging
+    variables:
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+    jobs:
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: staging
+          serviceConnectionName: sc-order-system-staging
+          functionAppName: $(orderApiFunctionAppName)
+          artifactName: order-api-function
+          jobDisplayName: Deploy order-api-function (staging)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: staging
+          serviceConnectionName: sc-order-system-staging
+          functionAppName: $(orderProcessorFunctionAppName)
+          artifactName: order-processor-function
+          jobDisplayName: Deploy order-processor-function (staging)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: staging
+          serviceConnectionName: sc-order-system-staging
+          functionAppName: $(orderTrackerLoggerFunctionAppName)
+          artifactName: order-tracker-logger-function
+          jobDisplayName: Deploy order-tracker-logger-function (staging)
+
+  # ---------------- prod ----------------
+  - template: pipelines/templates/deploy-infra.yml
+    parameters:
+      environmentName: prod
+      serviceConnectionName: sc-order-system-prod
+      resourceGroupName: rg-order-system-prod
+      bicepParamFile: infra/bicep/params/prod.bicepparam
+      dependsOn:
+        - DeployFunctions_staging
+
+  - stage: DeployFunctions_prod
+    displayName: Deploy function apps (prod)
+    dependsOn: DeployInfra_prod
+    variables:
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+    jobs:
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: prod
+          serviceConnectionName: sc-order-system-prod
+          functionAppName: $(orderApiFunctionAppName)
+          artifactName: order-api-function
+          jobDisplayName: Deploy order-api-function (prod)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: prod
+          serviceConnectionName: sc-order-system-prod
+          functionAppName: $(orderProcessorFunctionAppName)
+          artifactName: order-processor-function
+          jobDisplayName: Deploy order-processor-function (prod)
+      - template: pipelines/templates/deploy-function.yml
+        parameters:
+          environmentName: prod
+          serviceConnectionName: sc-order-system-prod
+          functionAppName: $(orderTrackerLoggerFunctionAppName)
+          artifactName: order-tracker-logger-function
+          jobDisplayName: Deploy order-tracker-logger-function (prod)

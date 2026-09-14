@@ -1,0 +1,80 @@
+parameters:
+  - name: environmentName
+    type: string
+  - name: serviceConnectionName
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: bicepParamFile
+    type: string
+  - name: dependsOn
+    type: object
+    default: []
+
+stages:
+  - stage: DeployInfra_${{ parameters.environmentName }}
+    displayName: Deploy Infra (${{ parameters.environmentName }})
+    dependsOn: ${{ parameters.dependsOn }}
+    jobs:
+      - job: WhatIf
+        displayName: Bicep lint + what-if preview
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: AzureCLI@2
+            displayName: Lint Bicep
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnectionName }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: az bicep build --file infra/bicep/main.bicep --outfile $(Agent.TempDirectory)/main.json
+
+          - task: AzureCLI@2
+            displayName: What-if preview
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnectionName }}
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az deployment group what-if \
+                  --resource-group ${{ parameters.resourceGroupName }} \
+                  --template-file infra/bicep/main.bicep \
+                  --parameters ${{ parameters.bicepParamFile }}
+
+      # Gated by the Azure DevOps Environment's approval checks (configured in the portal, not here)
+      - deployment: DeployInfra
+        displayName: Deploy Bicep infrastructure
+        dependsOn: WhatIf
+        environment: ${{ parameters.environmentName }}
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - task: AzureCLI@2
+                  name: deployInfra
+                  displayName: Deploy Bicep (resource group scope)
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceConnectionName }}
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      set -e
+                      deploymentName="infra-${{ parameters.environmentName }}-$(Build.BuildId)"
+
+                      az deployment group create \
+                        --resource-group ${{ parameters.resourceGroupName }} \
+                        --template-file infra/bicep/main.bicep \
+                        --parameters ${{ parameters.bicepParamFile }} \
+                        --name "$deploymentName"
+
+                      outputs=$(az deployment group show \
+                        --resource-group ${{ parameters.resourceGroupName }} \
+                        --name "$deploymentName" \
+                        --query properties.outputs -o json)
+
+                      echo "##vso[task.setvariable variable=orderApiFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderApiFunctionAppName.value)"
+                      echo "##vso[task.setvariable variable=orderProcessorFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderProcessorFunctionAppName.value)"
+                      echo "##vso[task.setvariable variable=orderTrackerLoggerFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderTrackerLoggerFunctionAppName.value)"

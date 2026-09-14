@@ -1,0 +1,17 @@
+jobs:
+  # Relies on SCM_DO_BUILD_DURING_DEPLOYMENT (Oryx remote build) instead of vendoring packages here
+  - job: BuildOrderApi
+    displayName: Build order-api-function (Python)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: ArchiveFiles@2
+        displayName: Archive order-api-function
+        inputs:
+          rootFolderOrFile: order-api-function
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/order-api-function.zip
+
+      - publish: $(Build.ArtifactStagingDirectory)/order-api-function.zip
+        artifact: order-api-function

@@ -1,0 +1,17 @@
+jobs:
+  # Relies on SCM_DO_BUILD_DURING_DEPLOYMENT (Oryx remote build) instead of vendoring node_modules here
+  - job: BuildOrderTrackerLogger
+    displayName: Build order-tracker-logger-function (Node.js)
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: ArchiveFiles@2
+        displayName: Archive order-tracker-logger-function
+        inputs:
+          rootFolderOrFile: order-tracker-logger-function
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/order-tracker-logger-function.zip
+
+      - publish: $(Build.ArtifactStagingDirectory)/order-tracker-logger-function.zip
+        artifact: order-tracker-logger-function
