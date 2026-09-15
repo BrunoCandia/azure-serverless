@@ -41,6 +41,7 @@ stages:
       orderApiFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
       orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
       orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -66,6 +67,13 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (dev)
+      - template: pipelines/templates/deploy-event-grid.yml
+        parameters:
+          environmentName: dev
+          serviceConnectionName: sc-order-system-dev
+          resourceGroupName: rg-order-system-dev
+          fileStorageAccountName: $(fileStorageAccountName)
+          functionAppName: $(orderTrackerLoggerFunctionAppName)
 
   # ---------------- staging ----------------
   - template: pipelines/templates/deploy-infra.yml
@@ -84,6 +92,7 @@ stages:
       orderApiFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
       orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
       orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -109,6 +118,13 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (staging)
+      - template: pipelines/templates/deploy-event-grid.yml
+        parameters:
+          environmentName: staging
+          serviceConnectionName: sc-order-system-staging
+          resourceGroupName: rg-order-system-staging
+          fileStorageAccountName: $(fileStorageAccountName)
+          functionAppName: $(orderTrackerLoggerFunctionAppName)
 
   # ---------------- prod ----------------
   - template: pipelines/templates/deploy-infra.yml
@@ -127,6 +143,7 @@ stages:
       orderApiFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
       orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
       orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -152,3 +169,10 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (prod)
+      - template: pipelines/templates/deploy-event-grid.yml
+        parameters:
+          environmentName: prod
+          serviceConnectionName: sc-order-system-prod
+          resourceGroupName: rg-order-system-prod
+          fileStorageAccountName: $(fileStorageAccountName)
+          functionAppName: $(orderTrackerLoggerFunctionAppName)

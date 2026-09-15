@@ -78,3 +78,4 @@ stages:
                       echo "##vso[task.setvariable variable=orderApiFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderApiFunctionAppName.value)"
                       echo "##vso[task.setvariable variable=orderProcessorFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderProcessorFunctionAppName.value)"
                       echo "##vso[task.setvariable variable=orderTrackerLoggerFunctionAppName;isOutput=true]$(echo "$outputs" | jq -r .orderTrackerLoggerFunctionAppName.value)"
+                      echo "##vso[task.setvariable variable=fileStorageAccountName;isOutput=true]$(echo "$outputs" | jq -r .fileStorageAccountName.value)"

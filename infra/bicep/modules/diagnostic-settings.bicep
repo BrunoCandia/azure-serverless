@@ -13,10 +13,6 @@ resource diagnosticSetting 'Microsoft.Insights/diagnosticSettings@2021-05-01-pre
     workspaceId: logAnalyticsWorkspaceId
     logs: [
       { category: 'FunctionAppLogs', enabled: true }
-      { category: 'AppServiceConsoleLogs', enabled: true }
-      { category: 'AppServiceAppLogs', enabled: true }
-      { category: 'AppServiceHTTPLogs', enabled: true }
-      { category: 'AppServicePlatformLogs', enabled: true }
     ]
   }
 }

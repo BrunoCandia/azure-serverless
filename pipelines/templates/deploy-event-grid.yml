@@ -1,0 +1,37 @@
+parameters:
+  - name: environmentName
+    type: string
+  - name: serviceConnectionName
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: fileStorageAccountName
+    type: string
+  - name: functionAppName
+    type: string
+
+jobs:
+  # Must run after the tracker-logger code deploy: the target function has to exist before Event Grid can subscribe to it
+  - deployment: DeployEventGrid
+    displayName: Create Event Grid subscription (post code-deploy)
+    dependsOn: Deploy_OrderTrackerLogger
+    environment: ${{ parameters.environmentName }}
+    pool:
+      vmImage: ubuntu-latest
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - task: AzureCLI@2
+              displayName: Deploy Event Grid subscription
+              inputs:
+                azureSubscription: ${{ parameters.serviceConnectionName }}
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  set -e
+                  az deployment group create \
+                    --resource-group ${{ parameters.resourceGroupName }} \
+                    --template-file infra/bicep/modules/event-grid.bicep \
+                    --parameters fileStorageAccountName=${{ parameters.fileStorageAccountName }} functionAppName=${{ parameters.functionAppName }} functionName=OrderTrackerLogger

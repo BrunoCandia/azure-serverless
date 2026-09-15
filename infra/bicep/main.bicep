@@ -138,17 +138,10 @@ module orderApiDiagnostics 'modules/diagnostic-settings.bicep' = {
   }
 }
 
-module eventGrid 'modules/event-grid.bicep' = {
-  name: 'event-grid'
-  params: {
-    fileStorageAccountName: storage.outputs.fileStorageAccountName
-    functionAppName: orderTrackerLoggerFunction.outputs.functionAppName
-    functionName: 'OrderTrackerLogger'
-  }
-}
-
+// Event Grid subscription is deployed separately, after order-tracker-logger code is live (see pipelines/templates/deploy-event-grid.yml)
 output resourceGroupName string = resourceGroup().name
 output orderApiFunctionUrl string = orderApiFunction.outputs.defaultHostname
 output orderApiFunctionAppName string = orderApiFunction.outputs.functionAppName
 output orderProcessorFunctionAppName string = orderProcessorFunction.outputs.functionAppName
 output orderTrackerLoggerFunctionAppName string = orderTrackerLoggerFunction.outputs.functionAppName
+output fileStorageAccountName string = storage.outputs.fileStorageAccountName
