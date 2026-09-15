@@ -38,10 +38,10 @@ stages:
     displayName: Deploy function apps (dev)
     dependsOn: DeployInfra_dev
     variables:
-      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
-      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
-      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
-      fileStorageAccountName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['DeployInfra.deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['DeployInfra.deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['DeployInfra.deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_dev.DeployInfra.outputs['DeployInfra.deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -89,10 +89,10 @@ stages:
     displayName: Deploy function apps (staging)
     dependsOn: DeployInfra_staging
     variables:
-      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
-      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
-      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
-      fileStorageAccountName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['DeployInfra.deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['DeployInfra.deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['DeployInfra.deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_staging.DeployInfra.outputs['DeployInfra.deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -140,10 +140,10 @@ stages:
     displayName: Deploy function apps (prod)
     dependsOn: DeployInfra_prod
     variables:
-      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderApiFunctionAppName'] ]
-      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderProcessorFunctionAppName'] ]
-      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.orderTrackerLoggerFunctionAppName'] ]
-      fileStorageAccountName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['deployInfra.fileStorageAccountName'] ]
+      orderApiFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['DeployInfra.deployInfra.orderApiFunctionAppName'] ]
+      orderProcessorFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['DeployInfra.deployInfra.orderProcessorFunctionAppName'] ]
+      orderTrackerLoggerFunctionAppName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['DeployInfra.deployInfra.orderTrackerLoggerFunctionAppName'] ]
+      fileStorageAccountName: $[ stageDependencies.DeployInfra_prod.DeployInfra.outputs['DeployInfra.deployInfra.fileStorageAccountName'] ]
     jobs:
       - template: pipelines/templates/deploy-function.yml
         parameters:
