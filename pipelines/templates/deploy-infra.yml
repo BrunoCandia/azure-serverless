@@ -54,8 +54,8 @@ stages:
               steps:
                 - checkout: self
                 - task: AzureCLI@2
-                  name: deployInfra
                   displayName: Deploy Bicep (resource group scope)
+                  name: deployInfra
                   inputs:
                     azureSubscription: ${{ parameters.serviceConnectionName }}
                     scriptType: bash

@@ -1,10 +1,19 @@
 jobs:
-  # Relies on SCM_DO_BUILD_DURING_DEPLOYMENT (Oryx remote build) instead of vendoring node_modules here
   - job: BuildOrderTrackerLogger
     displayName: Build order-tracker-logger-function (Node.js)
     pool:
       vmImage: ubuntu-latest
     steps:
+      - task: NodeTool@0
+        displayName: Use Node.js 22.x
+        inputs:
+          versionSpec: '22.x'
+
+      - script: |
+          cd order-tracker-logger-function
+          npm ci --omit=dev
+        displayName: Install npm dependencies
+
       - task: ArchiveFiles@2
         displayName: Archive order-tracker-logger-function
         inputs:

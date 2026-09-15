@@ -1,10 +1,19 @@
 jobs:
-  # Relies on SCM_DO_BUILD_DURING_DEPLOYMENT (Oryx remote build) instead of vendoring packages here
   - job: BuildOrderApi
     displayName: Build order-api-function (Python)
     pool:
       vmImage: ubuntu-latest
     steps:
+      - task: UsePythonVersion@0
+        displayName: Use Python 3.12
+        inputs:
+          versionSpec: '3.12'
+
+      - script: |
+          cd order-api-function
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        displayName: Install Python dependencies
+
       - task: ArchiveFiles@2
         displayName: Archive order-api-function
         inputs:
