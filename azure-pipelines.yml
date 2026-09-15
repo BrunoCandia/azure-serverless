@@ -48,6 +48,7 @@ stages:
           serviceConnectionName: sc-order-system-dev
           functionAppName: $(orderApiFunctionAppName)
           artifactName: order-api-function
+          jobName: OrderApi
           jobDisplayName: Deploy order-api-function (dev)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -55,6 +56,7 @@ stages:
           serviceConnectionName: sc-order-system-dev
           functionAppName: $(orderProcessorFunctionAppName)
           artifactName: order-processor-function
+          jobName: OrderProcessor
           jobDisplayName: Deploy order-processor-function (dev)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -62,6 +64,7 @@ stages:
           serviceConnectionName: sc-order-system-dev
           functionAppName: $(orderTrackerLoggerFunctionAppName)
           artifactName: order-tracker-logger-function
+          jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (dev)
 
   # ---------------- staging ----------------
@@ -88,6 +91,7 @@ stages:
           serviceConnectionName: sc-order-system-staging
           functionAppName: $(orderApiFunctionAppName)
           artifactName: order-api-function
+          jobName: OrderApi
           jobDisplayName: Deploy order-api-function (staging)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -95,6 +99,7 @@ stages:
           serviceConnectionName: sc-order-system-staging
           functionAppName: $(orderProcessorFunctionAppName)
           artifactName: order-processor-function
+          jobName: OrderProcessor
           jobDisplayName: Deploy order-processor-function (staging)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -102,6 +107,7 @@ stages:
           serviceConnectionName: sc-order-system-staging
           functionAppName: $(orderTrackerLoggerFunctionAppName)
           artifactName: order-tracker-logger-function
+          jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (staging)
 
   # ---------------- prod ----------------
@@ -128,6 +134,7 @@ stages:
           serviceConnectionName: sc-order-system-prod
           functionAppName: $(orderApiFunctionAppName)
           artifactName: order-api-function
+          jobName: OrderApi
           jobDisplayName: Deploy order-api-function (prod)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -135,6 +142,7 @@ stages:
           serviceConnectionName: sc-order-system-prod
           functionAppName: $(orderProcessorFunctionAppName)
           artifactName: order-processor-function
+          jobName: OrderProcessor
           jobDisplayName: Deploy order-processor-function (prod)
       - template: pipelines/templates/deploy-function.yml
         parameters:
@@ -142,4 +150,5 @@ stages:
           serviceConnectionName: sc-order-system-prod
           functionAppName: $(orderTrackerLoggerFunctionAppName)
           artifactName: order-tracker-logger-function
+          jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (prod)
