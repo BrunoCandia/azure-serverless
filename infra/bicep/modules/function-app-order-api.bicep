@@ -37,6 +37,8 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         { name: 'FUNCTIONS_EXTENSION_VERSION', value: '~4' }
         { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'python' }
         { name: 'SCM_DO_BUILD_DURING_DEPLOYMENT', value: 'true' }
+        { name: 'ENABLE_ORYX_BUILD', value: 'true' }
+        { name: 'AzureWebJobsFeatureFlags', value: 'EnableWorkerIndexing' }
         { name: 'AzureWebJobsStorage', value: storageConnectionString }
         { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appInsightsConnectionString }
         { name: 'ApplicationInsightsAgent_EXTENSION_VERSION', value: '~3' }

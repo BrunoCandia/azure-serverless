@@ -31,6 +31,30 @@ jobs:
                 scriptLocation: inlineScript
                 inlineScript: |
                   set -e
+                  functionAppId=$(az functionapp show \
+                    --name ${{ parameters.functionAppName }} \
+                    --resource-group ${{ parameters.resourceGroupName }} \
+                    --query id -o tsv)
+
+                  # Force the runtime to re-index its functions instead of waiting for the next cold start
+                  az rest --method post --url "https://management.azure.com${functionAppId}/syncfunctiontriggers?api-version=2016-08-01" || true
+
+                  echo "Waiting for function 'OrderTrackerLogger' to be registered on the function app..."
+                  found=false
+                  for i in $(seq 1 20); do
+                    if az rest --method get --url "https://management.azure.com${functionAppId}/functions/OrderTrackerLogger?api-version=2023-12-01" -o none 2>/dev/null; then
+                      found=true
+                      break
+                    fi
+                    echo "Attempt $i/20: function not visible yet, retrying in 15s..."
+                    sleep 15
+                  done
+
+                  if [ "$found" != "true" ]; then
+                    echo "##vso[task.logissue type=error]Function OrderTrackerLogger never appeared on ${{ parameters.functionAppName }} after 5 minutes."
+                    exit 1
+                  fi
+
                   az deployment group create \
                     --resource-group ${{ parameters.resourceGroupName }} \
                     --template-file infra/bicep/modules/event-grid.bicep \
