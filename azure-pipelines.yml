@@ -51,6 +51,7 @@ stages:
           artifactName: order-api-function
           jobName: OrderApi
           jobDisplayName: Deploy order-api-function (dev)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-function.yml
         parameters:
           environmentName: dev
@@ -67,6 +68,7 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (dev)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-event-grid.yml
         parameters:
           environmentName: dev
@@ -102,6 +104,7 @@ stages:
           artifactName: order-api-function
           jobName: OrderApi
           jobDisplayName: Deploy order-api-function (staging)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-function.yml
         parameters:
           environmentName: staging
@@ -118,6 +121,7 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (staging)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-event-grid.yml
         parameters:
           environmentName: staging
@@ -153,6 +157,7 @@ stages:
           artifactName: order-api-function
           jobName: OrderApi
           jobDisplayName: Deploy order-api-function (prod)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-function.yml
         parameters:
           environmentName: prod
@@ -169,6 +174,7 @@ stages:
           artifactName: order-tracker-logger-function
           jobName: OrderTrackerLogger
           jobDisplayName: Deploy order-tracker-logger-function (prod)
+          deploymentMethod: zipDeploy
       - template: pipelines/templates/deploy-event-grid.yml
         parameters:
           environmentName: prod

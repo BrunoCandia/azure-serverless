@@ -11,6 +11,9 @@ parameters:
     type: string
   - name: jobDisplayName
     type: string
+  - name: deploymentMethod
+    type: string
+    default: auto
 
 jobs:
   - deployment: Deploy_${{ parameters.jobName }}
@@ -32,3 +35,4 @@ jobs:
                 appType: functionAppLinux
                 appName: ${{ parameters.functionAppName }}
                 package: $(Pipeline.Workspace)/${{ parameters.artifactName }}/${{ parameters.artifactName }}.zip
+                deploymentMethod: ${{ parameters.deploymentMethod }}
